@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  postgresql:
+    image: postgres
+    ports:
+      - "5434:5432"
+    env_file:
+      - ./.env
+    networks:
+      - nest-application
+networks:
+  nest-application:
