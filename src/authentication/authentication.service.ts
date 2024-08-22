@@ -4,16 +4,14 @@ import * as argon from "argon2";
 
 import { DatabaseService } from "../database/database.service";
 
-import { NewUserDTO } from "../user/user.dto";
+import { AuthenticationUserDTO } from "../user/user.dto";
 import { SecureUser } from "../user/user.types";
-
 
 @Injectable()
 export class AuthenticationService {
-  constructor(private database: DatabaseService) {
-  }
+  constructor(private database: DatabaseService) {}
 
-  async register(user: NewUserDTO): Promise<SecureUser> {
+  async register(user: AuthenticationUserDTO): Promise<SecureUser> {
     try {
       // Hash the password:
       user.password = await argon.hash(user.password);
@@ -33,7 +31,12 @@ export class AuthenticationService {
     }
   }
 
-  async authenticate() {
-    throw new Error("Method not implemented.");
+  async authenticate(user: AuthenticationUserDTO) {
+    const $user = await this.database.user.findUnique({ where: { email: user.email } });
+    if (!$user || !(await argon.verify($user.password, user.password))) {
+      throw new ForbiddenException("Either the provided email or the provided password is incorrect.");
+    }
+    delete $user.password;
+    return $user;
   }
 }

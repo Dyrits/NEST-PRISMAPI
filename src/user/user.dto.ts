@@ -2,7 +2,7 @@ import { IsEmail, IsNotEmpty, Length } from "class-validator";
 
 import { NewUser } from "./user.types";
 
-class NewUserDTO implements NewUser {
+class AuthenticationUserDTO implements NewUser {
   @IsEmail()
   @IsNotEmpty()
   email: string;
@@ -14,4 +14,4 @@ class NewUserDTO implements NewUser {
   lastName: string | null;
 }
 
-export { NewUserDTO };
+export { AuthenticationUserDTO };
