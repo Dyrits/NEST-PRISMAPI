@@ -9,7 +9,7 @@ import { DatabaseModule } from "./database/database.module";
 @Module({
   imports: [ConfigModule.forRoot({ isGlobal: true }), AuthenticationModule, UserModule, BookmarkModule, DatabaseModule],
   controllers: [],
-  providers: []
+  providers: [],
 })
 export class AppModule {
 }
