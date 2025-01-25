@@ -9,8 +9,8 @@ export class DatabaseService extends PrismaClient {
       datasources: {
         db: {
           url: configuration.get<string>("DATABASE_URL"),
-        },
-      },
+        }
+      }
     });
   }
 }

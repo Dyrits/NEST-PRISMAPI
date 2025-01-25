@@ -1,6 +1,6 @@
 import { IsEmail, IsNotEmpty, Length } from "class-validator";
 
-import { NewUser } from "./user.types";
+import { type NewUser } from "./user.types";
 
 class AuthenticationUserDTO implements NewUser {
   @IsEmail()

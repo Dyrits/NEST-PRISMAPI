@@ -4,10 +4,9 @@ import { JwtService } from "@nestjs/jwt";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import * as argon from "argon2";
 
-import { DatabaseService } from "../database/database.service";
-
+import { type SecureUser } from "../user/user.types";
 import { AuthenticationUserDTO } from "../user/user.dto";
-import { SecureUser } from "../user/user.types";
+import { DatabaseService } from "../database/database.service";
 
 export interface JWTToken {
   token: string;
