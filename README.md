@@ -46,3 +46,9 @@ No license file is present in this repository.
 ## Contact
 
 Dyrits - https://github.com/Dyrits
+
+## Dependency verification (November 2026)
+
+Targeted lockfile updates fix the form-data boundary randomness and proxy-addr trust-subnet advisories. Other dependency advisories remain, including high-severity findings; this is not a security clearance or a supported production-stack claim. Use Node.js 26.13.0 LTS and a clean `npm ci`, then `npm run build` and `npm run test:dependencies`.
+
+The authentication HTTP check uses a stub authentication service to test routing and input validation. It does not test Prisma, a real database, password hashing, JWT issuance or a deployed service. A compatible jsonwebtoken update also fixes an actual startup failure on Node 26. The repository has no unit test files matching its default Jest command.
