@@ -67,7 +67,23 @@ const kind = process.env.SMOKE_KIND;
       assert.equal(response.body.access_token, 'isolated-test-token');
       await http.post('/authentication/sign-in').send({ email: 'smoke@example.invalid', password: 'test-password' }).expect(201);
     }
-    console.log('PASS isolated HTTP smoke: ' + kind);
+    // Exercise the patched compressed-body path through a real HTTP socket.
+    await app.listen(0, '127.0.0.1');
+    const port = app.getHttpServer().address().port;
+    const endpoint = kind === 'messages' ? '/messages' : kind === 'expense' ? '/reports/expense' : '/authentication/sign-up';
+    const compressed = require('node:zlib').gzipSync(Buffer.from('{}'));
+    const malformed = Buffer.concat([compressed, Buffer.from('invalid trailing bytes')]);
+    const status = await new Promise((resolve, reject) => {
+      const req = require('node:http').request({ host: '127.0.0.1', port, path: endpoint, method: 'POST', headers: {
+        'Content-Type': 'application/json', 'Content-Encoding': 'gzip', 'Content-Length': malformed.length
+      } }, response => { response.resume(); response.on('end', () => resolve(response.statusCode)); });
+      req.setTimeout(2000, () => req.destroy(new Error('compressed request hung')));
+      req.on('error', reject);
+      req.end(malformed);
+    });
+    assert.equal(status, 400, 'invalid compressed body must be rejected without hanging');
+    await http.post(endpoint).send({}).expect(400);
+    console.log('PASS isolated HTTP smoke and malformed gzip rejection: ' + kind);
   } finally {
     if (app) await app.close();
     process.chdir(oldCwd);

@@ -78,5 +78,9 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "overrides": {
+    "body-parser": "^1.20.9",
+    "express": "^4.22.3"
   }
 }
